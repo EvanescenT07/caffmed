@@ -15,6 +15,15 @@ def load_upload_image(image_bytes):
         image_array = np.array(image_array) / 255.0  # Normalize the image
         return image_array
     except Exception as e:
-        return f"Error processing image: {str(e)}", None
+        return f"Error processing image: {str(e)}"
         
-        
+def suspicious_input(image_bytes):
+    try:
+        image = Image.open(io.BytesIO(image_bytes))
+        if image.mode not in ['RGB', 'L']:
+            return True
+        if image.size[0] < 200 or image.size[1] < 200:
+            return True
+        return False
+    except Exception as e:
+        return True
