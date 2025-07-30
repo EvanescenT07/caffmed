@@ -1,0 +1,72 @@
+name: Caffmed CI
+
+on:
+  push:
+    branches:
+      - main
+      - backend/development
+      - frontend/development
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend:
+    if: |
+      contains(github.event.head_commit.message, '[BE]') ||
+      contains(github.event.head_commit.message, '[ALL]') ||
+      github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      runs:
+        working-directory: backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          source venv/bin/activate
+          pytest --maxfail=1 --disable-warnings -q
+
+  frontend:
+    if: |
+      contains(github.event.head_commit.message, '[FE]') ||
+      contains(github.event.head_commit.message, '[ALL]') ||
+      github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      runs:
+        working-directory: frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: lint code
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test -- --watchAll=false
+
+      - name: Build project
+        run: npm run build
