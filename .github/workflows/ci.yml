@@ -9,13 +9,34 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "backend/**"
+      - "frontend/**"
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Filter paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
   backend:
+    needs: changes
     if: |
       contains(github.event.head_commit.message, '[BE]') ||
       contains(github.event.head_commit.message, '[ALL]') ||
-      (github.event_name == 'pull_request' && github.event.pull_request.changed_files > 0)
+      (github.event_name == 'pull_request' && needs.changes.outputs.backend == 'true')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,10 +60,11 @@ jobs:
           pytest --disable-warnings
 
   frontend:
+    needs: changes
     if: |
       contains(github.event.head_commit.message, '[FE]') ||
       contains(github.event.head_commit.message, '[ALL]') ||
-      (github.event_name == 'pull_request' && github.event.pull_request.changed_files > 0)
+      (github.event_name == 'pull_request' && needs.changes.outputs.frontend == 'true')
     runs-on: ubuntu-latest
     defaults:
       run:
