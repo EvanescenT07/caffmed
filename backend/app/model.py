@@ -7,7 +7,7 @@ import logging
 
 load_dotenv()
 
-MODEL_PATH = os.getenv('MODEL_PATH')
+MODEL_PATH = os.getenv('MODEL_PATH', 'model/model.h5')
 THRESHOLD = float(os.getenv('THRESHOLD', '0.83'))
 CLASS_NAMES = [name.strip() for name in os.getenv('CLASS_NAMES', '').split(',') if name.strip()]
 
