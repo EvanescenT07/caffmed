@@ -1,9 +1,9 @@
-from flask import current_app
 from .utils import load_upload_image, suspicious_input
 from keras.models import load_model
 from dotenv import load_dotenv
 import numpy as np
 import os
+import logging
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ try:
     model = load_model(MODEL_PATH)
 except Exception as e:
     model = None
-    current_app.logger.error(f"Error loading model: {e}")
+    logging.error(f"Error loading model: {e}")
 
 def model_load():
     return os.path.exists(MODEL_PATH) and model is not None # type: ignore
