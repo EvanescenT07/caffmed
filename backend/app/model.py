@@ -38,7 +38,7 @@ def predict_image(image_bytes):
         img_array = np.expand_dims(img_array, axis=0)
         prediction = model.predict(img_array) # type: ignore
         probability = float(np.max(prediction))
-        if probability < THRESHOLD or (probability >= 1.0 and suspicious_input(image_bytes)):
+        if probability < THRESHOLD or  suspicious_input(image_bytes):
             return {
                 "class": "Not a Brain X-Ray image",
                 "confidence": probability,

@@ -29,8 +29,8 @@ RUN apt-get update && \
 
 COPY --from=builder /root/.local /root/.local
 
-COPY /app/__init__.py /app/model.py /app/routes.py /app/utils.py ./app/
-COPY /app/model/model.h5 ./model/
+COPY app/ ./app/
+COPY app/model/model.h5 ./model/
 
 ENV PATH=/root/.local/bin:$PATH
 
