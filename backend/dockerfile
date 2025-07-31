@@ -1,0 +1,39 @@
+FROM python:3.11-slim-bookworm AS builder
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        gcc \
+        g++ \
+        libgl1-mesa-dev \
+        libglib2.0-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+# Runtime Stage
+FROM python:3.11-slim-bookworm AS runtime
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libgl1-mesa-glx \
+        libglib2.0-0 \
+        libgomp1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+COPY --from=builder /root/.local /root/.local
+
+COPY /app/__init__.py /app/model.py /app/routes.py /app/utils.py ./app/
+COPY /app/model/model.h5 ./model/
+
+ENV PATH=/root/.local/bin:$PATH
+
+EXPOSE 8000
+
+CMD [ "python server.py" ]

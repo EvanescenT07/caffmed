@@ -5,7 +5,8 @@ import os
 app = create_app()
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.getenv('PORT', 8000))
+    app.logger.info(f"Starting server on port {port}")
     print(f"starting server on port {port}")
     serve(
         app,

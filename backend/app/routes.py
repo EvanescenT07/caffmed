@@ -16,6 +16,7 @@ def model_check():
 @api_routes.route('/predict', methods=['POST'])
 def predict():
     if 'image' not in request.files:
+        current_app.logger.warning("No image part in the request")
         return jsonify({
             "success": False,
             "error": "No image uploaded"
@@ -23,12 +24,14 @@ def predict():
 
     image_file = request.files['image']
     if image_file.filename == '':
+        current_app.logger.warning("No selected file")
         return jsonify({
             "success": False,
             "error": "No selected file"
         }), 400
 
     if not allowed_file(image_file.filename):
+        current_app.logger.error("Invalid file type")
         return jsonify({
             "success": False,
             "error": "Invalid file type. Only PNG, JPG, JPEG files are allowed"
@@ -37,6 +40,7 @@ def predict():
     image_file.seek(0, os.SEEK_END)
     size = image_file.tell()
     if size > current_app.config['MAX_CONTENT_LENGTH']:
+        current_app.logger.error("File size exceeds the maximum limit")
         return jsonify({
             "success": False,
             "error": "File size too large. Maximum size is 5MB"
@@ -46,6 +50,7 @@ def predict():
     try:
         image_bytes = image_file.read()
         result = predict_image(image_bytes)
+        current_app.logger.info(f"Prediction result: {result}")
         return jsonify({
             "success": True,
             "predicted": result["class"],
@@ -53,6 +58,7 @@ def predict():
             "error": result["error"]
         })
     except Exception as e:
+        current_app.logger.error(f"Error during prediction: {e}")
         return jsonify({
             "success": False,
             "error": str(e)
