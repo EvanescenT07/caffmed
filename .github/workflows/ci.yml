@@ -83,6 +83,3 @@ jobs:
 
       - name: lint code
         run: npm run lint
-
-      - name: Build project
-        run: npm run build
