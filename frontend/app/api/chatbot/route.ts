@@ -16,9 +16,15 @@ const SYSTEM_MESSAGE: SYSTEM_MESSAGE_PROPS = {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    if (!body.messages || !Array.isArray(body.messages)) {
+    if (
+      !body.messages ||
+      !Array.isArray(body.messages) ||
+      body.messages.length === 0
+    ) {
       return NextResponse.json(
-        { error: "Invalid request format" },
+        {
+          error: "Invalid request format: 'messages' must be a non-empty array",
+        },
         { status: 400 }
       );
     }
