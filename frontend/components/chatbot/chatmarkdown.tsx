@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import ReactMarkdown from "react-markdown";
+import { useState, useEffect } from "react";
 
 export const ChatMarkdown = ({
   content,
@@ -8,30 +8,31 @@ export const ChatMarkdown = ({
   content: string;
   isBot: boolean;
 }) => {
+  const [formattedContent, setFormattedContent] = useState("");
+
+  useEffect(() => {
+    // Simple markdown parsing for basic formatting
+    const formatted = content
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold
+      .replace(/\*(.*?)\*/g, "<em>$1</em>") // Italic
+      .replace(
+        /`(.*?)`/g,
+        '<code class="bg-accent/50 px-1 rounded text-xs">$1</code>'
+      ) // Inline code
+      .replace(/\n/g, "<br />"); // Line breaks
+
+    setFormattedContent(formatted);
+  }, [content]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.15 }}
-    >
-      <ReactMarkdown
-        components={{
-          strong: (props) => <span className="font-bold" {...props} />,
-          p: (props) => <span {...props} />,
-          ul: (props) => <ul className="list-disc ml-4" {...props} />,
-          ol: (props) => <ol className="list-decimal ml-4" {...props} />,
-          code: (props) => (
-            <code
-              className={`px-1 py-0.5 rounded-md border ${
-                isBot ? "border-border bg-background" : "bg-card"
-              }`}
-              {...props}
-            />
-          ),
-        }}
-      >
-        {content}
-      </ReactMarkdown>
-    </motion.div>
+      className={`prose prose-sm max-w-none ${
+        isBot ? "prose-slate dark:prose-invert" : "prose-neutral"
+      }`}
+      dangerouslySetInnerHTML={{ __html: formattedContent }}
+    />
   );
 };

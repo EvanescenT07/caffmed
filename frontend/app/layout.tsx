@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import FloatingChatbot from "@/components/chatbot/floating-chatbot";
+import Navbar from "@/components/navbar/main-nav";
 
 const PoppinsFont = Poppins({
   variable: "--font-poppins",
@@ -16,6 +17,20 @@ export const metadata: Metadata = {
   title: "Caffmed",
   description:
     "CaffMed is a platform for detecting brain tumors using machine learning on brain X-ray.",
+  icons: {
+    icon: [
+      {
+        media: "(prefers-color-scheme: light)",
+        url: "/favicon-dark.png",
+        href: "/favicon-dark.png"
+      },
+      {
+        media: "(prefers-color-scheme: dark)",
+        url: "/favicon-light.png",
+        href: "/favicon-light.png"
+      },
+    ],
+  },
   creator: "Zulfikar Ahmad Aliansyah",
   publisher: "vercel",
   robots: "index , follow",
@@ -33,7 +48,13 @@ export default function RootLayout({
       <body className={`${PoppinsFont.variable} antialiased`}>
         <Toaster />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          {/* Fixed Navbar */}
+          <Navbar />
+
+          {/* Main Content with proper spacing */}
+          <main className="pt-20">{children}</main>
+
+          {/* Global Components */}
           <FloatingChatbot />
         </ThemeProvider>
       </body>
