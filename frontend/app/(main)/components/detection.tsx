@@ -514,11 +514,11 @@ const DetectionComponent = ({ id }: { id: string }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="h-full p-6 space-y-6"
+                  className="h-full p-6 space-y-6 overflow-y-auto scrollbar-none"
                 >
                   <div className="space-y-4">
                     <div className="text-center">
-                      <h3 className="text-xl font-bold text-primary mb-2">
+                      <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
                         Detection Complete
                       </h3>
                       <motion.div
