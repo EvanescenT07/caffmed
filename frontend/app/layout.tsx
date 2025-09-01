@@ -21,15 +21,17 @@ export const metadata: Metadata = {
     icon: [
       {
         media: "(prefers-color-scheme: light)",
-        url: "/favicon.png",
+        url: "/icon-light.png",
         type: "image/png",
       },
       {
         media: "(prefers-color-scheme: dark)",
-        url: "/d_favicon.png",
+        url: "/icon-dark.png",
         type: "image/png",
       },
     ],
+    shortcut: "/icon-dark.png",
+    apple: "/icon-dark.png",
   },
   creator: "Zulfikar Ahmad Aliansyah",
   publisher: "vercel",
